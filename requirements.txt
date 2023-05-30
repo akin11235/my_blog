@@ -1,0 +1,17 @@
+# requirements.txt
+
+Django
+gunicorn
+psycopg2
+whitenoise
+freezegun
+model_bakery
+pytest
+pytest-django
+pylint
+pylint-django
+Pillow
+boto3
+django-ckeditor
+django-storages
+djangorestframework
