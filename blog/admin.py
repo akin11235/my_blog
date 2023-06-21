@@ -3,6 +3,7 @@ from . import models
 
 
 # Register your models here.
+
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'title',
@@ -37,3 +38,23 @@ class TopicAdmin(admin.ModelAdmin):
     )
 
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(models.Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'email',
+        'text',
+        'created',
+        'updated',
+    )
+
+    list_filter = (
+        'approved',
+    )
+
+    search_fields = (
+        'name',
+        'post__topics',
+    )
