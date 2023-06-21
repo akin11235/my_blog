@@ -4,6 +4,16 @@ from . import models
 
 # Register your models here.
 
+class CommentInline(admin.StackedInline):
+    model = models.Comment
+
+    readonly_fields = (
+        'name',
+        'text',
+        'email',
+    )
+
+
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'title',
@@ -25,6 +35,10 @@ class PostAdmin(admin.ModelAdmin):
         'author__first_name',
         'author__last_name',
     )
+
+    inlines = [
+        CommentInline,
+    ]
 
 
 admin.site.register(models.Post, PostAdmin)
