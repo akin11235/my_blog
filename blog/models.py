@@ -3,6 +3,9 @@ from django.db import models
 
 
 class Topic(models.Model):
+    """
+
+    """
     name = models.CharField(
         max_length=50,
         unique=True,  # No duplicates!
@@ -78,6 +81,9 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    """
+
+    """
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
