@@ -1,6 +1,9 @@
 from django.conf import settings  # Imports Django's loaded settings
 from django.db import models
+from django.utils import timezone
 
+
+# Create your models here.
 
 class Topic(models.Model):
     """
@@ -20,7 +23,14 @@ class Topic(models.Model):
         ordering = ['name']
 
 
-# Create your models here.
+class PostQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(status=self.model.PUBLISHED)
+
+    def draft(self):
+        return self.filter(status=self.model.DRAFT)
+
+
 class Post(models.Model):
     """
     Represents a blog post
@@ -75,6 +85,12 @@ class Post(models.Model):
         #  specifies to order in descending/reverse order.
         #  Otherwise, it will be in ascending order.
         ordering = ['-created']
+
+    objects = PostQuerySet.as_manager()
+
+    def publish(self):
+        self.status = self.PUBLISHED
+        self.published = timezone.now()
 
     def __str__(self):
         return self.title
