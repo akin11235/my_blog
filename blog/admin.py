@@ -57,9 +57,9 @@ class TopicAdmin(admin.ModelAdmin):
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
+        'text',
         'name',
         'email',
-        'text',
         'created',
         'updated',
     )

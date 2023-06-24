@@ -103,7 +103,8 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='blog_comments',
+        related_name='comments',
+        null=False
     )
 
     name = models.CharField(
@@ -127,4 +128,4 @@ class Comment(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return self.name
+        return f'"{self.text}" by {self.name} posted {self.created}\n'
