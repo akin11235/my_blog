@@ -8,8 +8,10 @@ from django.contrib.auth import get_user_model
 
 class Topic(models.Model):
     """
-
+    Represents categories of blog posts topics
     """
+    objects = models.Manager()
+
     name = models.CharField(
         max_length=50,
         unique=True,  # No duplicates!
@@ -25,10 +27,13 @@ class Topic(models.Model):
 
 
 class PostQuerySet(models.QuerySet):
+    """
+    Extends the Post model base queryset with custom methods
+    """
     def published(self):
         return self.filter(status=self.model.PUBLISHED)
 
-    def draft(self):
+    def drafts(self):
         return self.filter(status=self.model.DRAFT)
 
     def get_authors(self):
@@ -37,10 +42,20 @@ class PostQuerySet(models.QuerySet):
         return User.objects.filter(blog_posts__in=self).distinct()
 
 
+# class PostManager(models.Manager):
+#     """
+#     Represents modified Post model base queryset
+#     """
+#     def get_queryset(self):
+#         queryset = super().get_queryset()  # Get the initial queryset
+#         return queryset.exclude(deleted=True)
+
+
 class Post(models.Model):
     """
     Represents a blog post
     """
+    objects = PostQuerySet.as_manager()
 
     DRAFT = 'draft'
     PUBLISHED = 'published'
@@ -85,14 +100,13 @@ class Post(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)  # Sets and create
     updated = models.DateTimeField(auto_now=True)  # Updates on each save
+    # deleted = models.BooleanField()  # Filters base set of data for soft-delete behaviour
 
     class Meta:
         #  Sort by the 'created' field. The '-' prefix
         #  specifies to order in descending/reverse order.
         #  Otherwise, it will be in ascending order.
         ordering = ['-created']
-
-    objects = PostQuerySet.as_manager()
 
     def publish(self):
         self.status = self.PUBLISHED
@@ -104,7 +118,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     """
-
+    Represents visitors comments
     """
     post = models.ForeignKey(
         Post,

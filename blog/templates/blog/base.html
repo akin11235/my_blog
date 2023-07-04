@@ -40,6 +40,13 @@
                     <li>{{ author.get_full_name }}</li>
                     {% endfor %}
                 </ul>
+            <h3>Popular Topics</h3>
+               <ul>
+                    {% for number_of_post in number_of_posts %}
+                    <li>{{ number_of_post.name }} ({{ number_of_post.topics }})</li>
+                    {% endfor %}
+                </ul>
+
         </section>
     </aside>
 

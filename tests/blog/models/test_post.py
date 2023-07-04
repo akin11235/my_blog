@@ -27,7 +27,7 @@ def test_published_posts_only_returns_those_with_draft_status():
     draft = baker.make('blog.Post', status=Post.DRAFT)
     baker.make('blog.Post', status=Post.PUBLISHED)
     expected = [draft]
-    result = list(Post.objects.draft())
+    result = list(Post.objects.drafts())
 
 
 def test_published_sets_status_to_published():
@@ -60,7 +60,7 @@ def test_get_authors_returns_users_who_have_authored_a_post(django_user_model):
 def test_get_authors_returns_unique_users(django_user_model):
     # Create a user
     author = baker.make(django_user_model)
-    # Create multiple posts. THe -quantity argument can be used
+    # Create multiple posts. The -quantity argument can be used
     # to specify how many objects to create
     baker.make('blog.Post', author=author, _quantity=3)
 
