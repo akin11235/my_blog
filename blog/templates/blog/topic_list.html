@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+
+{% block page_title %}Topics{% endblock %}
+
+{% block main %}
+<h1>Topics</h1>
+
+{% for topic in topics %}
+<article>
+
+    <ul >
+        <Li><a>{{ topic.name}}</a></Li>
+    </ul>
+
+
+</article>
+
+{% endfor %}
+
+{% endblock %}

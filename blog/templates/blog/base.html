@@ -21,6 +21,7 @@
         <li><a href="{% url 'home'  %}">Home</a></li>
         <li><a href="{% url 'about'  %}">About</a></li>
         <li><a href="{% url 'post-list' %}">Posts</a></li>
+        <li><a href="{% url 'topic-list' %}">Topics</a></li>
         <li><a href="#">Contact</a></li>
     </ul>
 </nav>
@@ -42,8 +43,8 @@
                 </ul>
             <h3>Popular Topics</h3>
                <ul>
-                    {% for number_of_post in number_of_posts %}
-                    <li>{{ number_of_post.name }} ({{ number_of_post.topics }})</li>
+                    {% for topic in top_topics %}
+                    <li>{{ topic.name }} ({{ topic.topics }})</li>
                     {% endfor %}
                 </ul>
 

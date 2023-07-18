@@ -26,6 +26,14 @@ class Topic(models.Model):
     class Meta:
         ordering = ['name']
 
+    def get_absolute_url(self):
+        return reverse(
+            'topic-detail',
+            kwargs={
+                'slug': self.slug
+            }
+        )
+
 
 class PostQuerySet(models.QuerySet):
     """

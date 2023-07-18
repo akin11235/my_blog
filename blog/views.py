@@ -146,3 +146,33 @@ class PostDetailView(DetailView):
             published__month=self.kwargs['month'],
             published__day=self.kwargs['day'],
         )
+
+
+# /////////////// TOPICS ////////////
+# class TopicView(TemplateView):
+#     template_name = 'blog/topics.html'
+    #
+    # def get(self, request):
+    #     return render(request, 'blog/topic.html')
+
+
+class TopicListView(ListView):
+    model = models.Topic
+    context_object_name = 'topics'
+    queryset = models.Topic.objects.order_by('name')
+
+
+class TopicDetailView(DetailView):
+    model = models.Topic
+
+    def get_queryset(self):
+        # Get the base queryset
+        queryset = super().get_queryset()
+
+        # if 'pk' in self.kwargs:
+        #     return queryset
+        #
+        # return queryset.filter(
+            # post__title=self.kwargs['name']
+        # )
+
