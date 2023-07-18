@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from . import models
-from django.db.models import Count
-from django.views import View
+# from django.db.models import Count
+# from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -164,15 +164,21 @@ class TopicListView(ListView):
 
 class TopicDetailView(DetailView):
     model = models.Topic
+    # context_object_name = 'topics'
 
     def get_queryset(self):
         # Get the base queryset
         queryset = super().get_queryset()
+        return queryset
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-        # if 'pk' in self.kwargs:
-        #     return queryset
-        #
-        # return queryset.filter(
-            # post__title=self.kwargs['name']
-        # )
+        context['topics'] = models.Topic.objects.all()
 
+        return context
+
+        # topic.blog_posts.all()
+        # post.topics.all()
+
+        # context.update({'topics': topics})

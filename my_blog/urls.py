@@ -40,8 +40,6 @@ urlpatterns = [
     path('topics/', views.TopicListView.as_view(), name='topic-list'),
     path('topics/<slug:slug>/',
          views.TopicDetailView.as_view(),
-         name='topic-detail'),
-    path('topics/<int:pk>/',
-         views.TopicDetailView.as_view(),
-         name='topic-detail')
+         name='topic-detail'
+         ),
 ]
