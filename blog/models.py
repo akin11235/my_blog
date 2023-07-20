@@ -6,6 +6,10 @@ from django.urls import reverse
 
 
 # Create your models here.
+class TopicQuerySet(models.QuerySet):
+    def get_topics(self):
+        return Topic.objects.all().filter(blog_posts__in=self)
+
 
 class Topic(models.Model):
     """
