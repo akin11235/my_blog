@@ -4,28 +4,14 @@
 
 {% block main %}
 
-<h2>{{object.name}}</h2>
-<p>{{ topic_count}} posts</p>
 
-<p> Requested Slug is ({{ requested_category }}) </p>
+  <h2>{{requested_category}}</h2>
 
-{% for topic in topic_detail %}
-{{ topic }}
-{% endfor %}
+  <p>{{ topic_posts|length}} post{{ topic_posts|pluralize}}</p>
 
-<h4>List of Posts filtered by topic are:...</h4>
-
-{% for post in latest_posts %}
-  {% include "blog/post_preview.html" %}
-<!--{{ post }}-->
-{% endfor %}
+    {% for post in topic_posts %}
+      {% include "blog/post_preview.html" %}
+    {% endfor %}
 
 {% endblock %}
 
-<!--{% for topic in topics %}-->
-<!--<h2>{{ topic.name}}</h2>-->
-<!--  {% include "blog/post_preview.html" %}-->
-<!--{% endfor %}-->
-
-<!--<h2>{{ latest_posts}}</h2>-->
-<!--<h2>{{ topic.count}}</h2>-->

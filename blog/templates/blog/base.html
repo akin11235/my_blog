@@ -43,16 +43,18 @@
 
     <aside id="sidebar">
         <section id="author-list">
-            <h3>Authors</h3>
-                <ul>
-                    {% for author in authors %}
-                    <li>{{ author.get_full_name }}</li>
-                    {% endfor %}
-                </ul>
+
             <h3>Popular Topics</h3>
                <ul>
                     {% for topic in top_topics %}
-                    <li>{{ topic.name }} ({{ topic.topics }})</li>
+                        <li><a href="{{ topic.get_absolute_url }}">{{ topic.name }} ({{ topic.topics }})</a></li>
+                    {% endfor %}
+                </ul>
+
+            <h3>Authors</h3>
+                <ul>
+                    {% for author in authors %}
+                         <li>{{ author.get_full_name }}</li>
                     {% endfor %}
                 </ul>
 

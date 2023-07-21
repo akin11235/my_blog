@@ -66,6 +66,8 @@ class HomeView(TemplateView):
 
         context.update({'latest_posts': latest_posts})
 
+
+
         # authors = models.Post.objects.published() \
         #     .get_authors() \
         #     .order_by('first_name')
@@ -170,22 +172,6 @@ class TopicDetailView(DetailView):
     def get_object(self, queryset=None):
         return models.Topic.objects.get(slug=self.kwargs['slug'])
 
-
-    # def get_slug_field(self):
-    #
-    #
-    # def get_context_object_name(self, obj):
-
-
-
-
-    # topic.blog_posts.all()
-    # post.topics.all()
-
-    # context.update({'topics': topics})
-
-
-
     def get_queryset(self):
         # Get the base queryset
         queryset = super().get_queryset()
@@ -196,45 +182,19 @@ class TopicDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs['slug']
 
-        latest_posts = models.Post.objects.published() \
-            .order_by('-published')[:3]
-
-        # topic_posts = models.Topic.objects.filter(name='Life')
-
         requested_category = models.Topic.objects.get(slug=slug)
 
-        # topic_posts = requested_category.blog_posts.all()
-
+        topic_posts = requested_category.blog_posts.all().published().order_by('-published')
 
         topics = models.Topic.objects.all()\
             .annotate(topics=Count('blog_posts'))\
             .values('name', 'topics').order_by('-topics')[:10]
 
-        # topic_count = models.Topic.objects.all().annotate(topics=Count('blog_posts')).values('name', 'topics')
+        context.update({'topics': topics,
+                        'requested_category': requested_category,
+                        'topic_posts': topic_posts},)
 
-        topic_count = models.Topic.objects.count()
-
-        context.update({'latest_posts': latest_posts,
-                       'topics': topics,
-                        'topic_count': topic_count,
-                        'requested_category': requested_category},)
-
-
-        # Update the context with our context variables
-        # context.update({
-        #     'authors': authors,
-        #     'latest_posts': latest_posts
-        #     'number_of_posts': number_of_posts
-        # })
         return context
-
-        # context['topics'] = models.Topic.objects.all()
-        # context['topics'] = models.Topic.objects.all().annotate(topics=Count('blog_posts')).values('name', 'topics').order_by('-topics')[:10]
-
-    # top_topics = models.Topic.objects.all() \
-    #     .annotate(topics=Count('blog_posts')) \
-    #     .values('name', 'topics') \
-    #     .order_by('-topics')[:10]
 
 
 def form_example(request):
@@ -275,4 +235,3 @@ class FormViewExample(FormView):
         )
         # Continue with default behaviour
         return super().form_valid(form)
-
