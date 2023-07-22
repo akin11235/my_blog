@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>My Blog - {% block page_title %}An awesome blog{% endblock %}</title>
 </head>
+
 <body>
  {% if messages %}
   <div class="django-messages">
@@ -13,6 +14,7 @@
     {% endfor %}
   </div>
   {% endif %}
+
 <!--The header-->
 <div class="wrapper">
 <header id="site-header">
@@ -30,7 +32,8 @@
         <li><a href="{% url 'about'  %}">About</a></li>
         <li><a href="{% url 'post-list' %}">Posts</a></li>
         <li><a href="{% url 'topic-list' %}">Topics</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#">Photo contest</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
     </ul>
 </nav>
 

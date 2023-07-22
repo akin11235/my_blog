@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # Create your models here.
@@ -103,7 +104,8 @@ class Post(models.Model):
         null=False,
     )
 
-    content = models.TextField()
+    # content = models.TextField()
+    content = RichTextUploadingField()
 
     published = models.DateTimeField(
         null=True,
@@ -114,6 +116,12 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)  # Sets and create
     updated = models.DateTimeField(auto_now=True)  # Updates on each save
     # deleted = models.BooleanField()  # Filters base set of data for soft-delete behaviour
+
+    banner = models.ImageField(
+        blank=True,
+        null=True,
+        help_text='A banner image for the post'
+    )
 
     class Meta:
         #  Sort by the 'created' field. The '-' prefix
@@ -175,3 +183,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'"{self.text}" by {self.name} posted {self.created}\n'
+
+
+class Contact(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    message = models.TextField()
+    submitted = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-submitted']
+
+    def __str__(self):
+        return f'{self.submitted.date()}: {self.email}'

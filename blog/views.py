@@ -3,7 +3,7 @@ from . import forms, models
 from django.db.models import Count
 # from django.views import View
 from django.views.generic.base import TemplateView
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, CreateView, FormView, ListView
 from django.urls import reverse_lazy
 from django.contrib import messages
 
@@ -65,8 +65,6 @@ class HomeView(TemplateView):
             .order_by('-published')[:3]
 
         context.update({'latest_posts': latest_posts})
-
-
 
         # authors = models.Post.objects.published() \
         #     .get_authors() \
@@ -234,4 +232,23 @@ class FormViewExample(FormView):
             'Thank you for signing up!'
         )
         # Continue with default behaviour
+        return super().form_valid(form)
+
+
+class ContactFormView(CreateView):
+    model = models.Contact
+    success_url = reverse_lazy('home')
+    fields = [
+        'first_name',
+        'last_name',
+        'email',
+        'message',
+    ]
+
+    def form_valid(self, form):
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Thank you! Your message has been sent.'
+        )
         return super().form_valid(form)
