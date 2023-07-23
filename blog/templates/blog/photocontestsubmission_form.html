@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+
+{% block page_title %}Photo Contest{% endblock %}
+
+{% block main %}
+
+<h1>Enter the photo contest!</h1>
+
+<p>{% lorem %}</p>
+<p>{% lorem %}</p>
+
+<form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <button type="submit">Submit</button>
+
+</form>
+
+{% endblock %}

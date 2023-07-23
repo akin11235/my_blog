@@ -9,7 +9,7 @@ def base_context(request):
 
     top_topics = models.Topic.objects.all() \
         .annotate(topics=Count('blog_posts')) \
-        .values('name', 'topics') \
+        .values('name', 'topics', 'slug') \
         .order_by('-topics')[:10]
 
     return {'authors': authors,

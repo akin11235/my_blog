@@ -16,6 +16,12 @@
 
 <!--    <h4><a> of Related Topics ??????</a></h4>-->
 
+    <ul>
+            {% for topic in post.topics.all %}
+            <li><a href="{% url 'topic-detail' topic.slug %}">{{ topic.name }}</a></li>
+            {% endfor %}
+        </ul>
+
 
     <section class="content">{{ post.content|safe|linebreaks }}</section>
 </article>

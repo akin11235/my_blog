@@ -252,3 +252,22 @@ class ContactFormView(CreateView):
             'Thank you! Your message has been sent.'
         )
         return super().form_valid(form)
+
+
+class PhotoContestSubmissionFormView(CreateView):
+    model = models.PhotoContestSubmission
+    success_url = reverse_lazy('home')
+    fields = [
+        'first_name',
+        'last_name',
+        'email',
+        'photo',
+    ]
+
+    def form_valid(self, form):
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Thank you! Your photo submission has been received.'
+        )
+        return super().form_valid(form)

@@ -32,7 +32,7 @@
         <li><a href="{% url 'about'  %}">About</a></li>
         <li><a href="{% url 'post-list' %}">Posts</a></li>
         <li><a href="{% url 'topic-list' %}">Topics</a></li>
-        <li><a href="#">Photo contest</a></li>
+        <li><a href="{% url 'contest' %}">Photo contest</a></li>
         <li><a href="{% url 'contact' %}">Contact</a></li>
     </ul>
 </nav>
@@ -50,7 +50,7 @@
             <h3>Popular Topics</h3>
                <ul>
                     {% for topic in top_topics %}
-                        <li><a href="{{ topic.get_absolute_url }}">{{ topic.name }} ({{ topic.topics }})</a></li>
+                        <li><a href="{% url 'topic-detail' topic.slug %}">{{ topic.name }} ({{ topic.topics }})</a></li>
                     {% endfor %}
                 </ul>
 

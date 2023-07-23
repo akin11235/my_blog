@@ -90,3 +90,25 @@ class ContactAdmin(admin.ModelAdmin):
         'message',
         'submitted'
     )
+
+
+@admin.register(models.PhotoContestSubmission)
+class PhotoContestSubmissionAdmin(admin.ModelAdmin):
+    list_display = (
+        'email',
+        'last_name',
+        'first_name',
+        'submitted'
+    )
+    # The following to be read-only fields in the admin
+    readonly_fields = (
+        'first_name',
+        'last_name',
+        'email',
+        'photo',
+        'submitted'
+    )
+    list_filter = (
+        'last_name',
+        'submitted',
+    )

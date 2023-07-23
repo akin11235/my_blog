@@ -55,4 +55,5 @@ urlpatterns = [
     ),
     path('contact/', views.ContactFormView.as_view(), name='contact'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('contest/', views.PhotoContestSubmissionFormView.as_view(), name='contest'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
