@@ -201,14 +201,6 @@ class Comment(models.Model):
     def __str__(self):
         return f'"{self.text}" by {self.name} posted {self.created}\n'
 
-    def get_absolute_url(self):
-        self.number_of_likes = self.likes
-        self.number_of_dislikes = self.dislikes
-        if self.number_of_likes:
-            return reverse('like', kwargs={'pk': self.pk})
-        elif self.number_of_dislikes:
-            return reverse('dislike', kwargs={'pk': self.pk})
-
 
 class Contact(models.Model):
     first_name = models.CharField(max_length=50)

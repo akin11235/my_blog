@@ -22,17 +22,12 @@ class ExampleSignupForm(forms.Form):
     )
 
 
-class CommentForm(forms.Form):
-    name = forms.CharField(label='name', max_length=50)
-    email = forms.EmailField()
-    text = forms.CharField(widget=forms.Textarea)
-
-
-# class CommentForm(forms.ModelForm):
-    # class Meta:
-    #     model = Comment
-    #     fields = ('name', 'email', 'text')
-
-    # name = forms.CharField(label='name', max_length=50)
-    # email = forms.EmailField()
-    # text = forms.CharField(widget=forms.Textarea)
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('name', 'email', 'text')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': "col-sm-12"}),
+            'email': forms.TextInput(attrs={'class': "col-sm-12"}),
+            'text': forms.Textarea(attrs={'class': "col-sm-12"}),
+        }

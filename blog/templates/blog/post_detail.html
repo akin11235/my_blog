@@ -12,16 +12,14 @@
     <span class="author">{{ post.author.get_full_name }}</span>
 
     {% if post.banner %}
-    <img src="{{ post.banner.url }}" width="100%" alt="Banner Image">
+        <img src="{{ post.banner.url }}" width="100%" alt="Banner Image">
     {% endif %}
 
     {% for topic in post.topics.all %}
-    <p><a href="{% url 'topic-detail' topic.slug %}">{{ topic.name }}</a></p>
+        <p><a href="{% url 'topic-detail' topic.slug %}">{{ topic.name }}</a></p>
     {% endfor %}
     <section class="content">{{ post.content|safe|linebreaks }}</section>
 </article>
-
-
 
 <article id="comment-article">
     <h1 >Latest Comments</h1>
@@ -30,10 +28,10 @@
         <p>{{ comment.text }}</p>
 
           <form method="post">
-            <a href="{{ comment.get_absolute_url }}" class="like">
+            <a href="{% url 'like' post.pk %}" class="like">
                 <img src="{% static 'blog/thumbsup.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs" >
             </a>  <span>{{comment.likes}}</span>
-            <a href="{{ comment.get_absolute_url }}" class="dislike">
+            <a href="{% url 'dislike' post.pk %}" class="dislike">
                 <img src="{% static 'blog/thumbsdown.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs">
             </a> <span>{{comment.dislikes}}</span>
           </form>
@@ -41,17 +39,8 @@
     {% endfor %}
 </article >
 
-<!--{% for comment in top_comments %}-->
-<!--<p><span class="thumbs">By</span> {{ comment.name }} | {{ comment.updated}}</p>-->
-<!--<p >>{{comment.text}}</p>-->
-<!-- <img class="thumbs" src="{% static 'blog/thumbsup.png' %}" alt="logo" style="width:15px;height:15px;">{{comment.likes}}-->
-<!--<img class="thumbs" src="{% static 'blog/thumbsdown.png' %}" alt="logo" style="width:15px;height:15px;">{{comment.dislikes}}-->
-
-<!--{% endfor %}-->
-
 <h3>Leave a Comment</h3>
 
-<!--  {{example_form}}-->
 <form action="" method="post">
     {% csrf_token %}
     <table>
@@ -66,12 +55,4 @@
 
 {% endblock %}
 
-<!--<form action=""  method="post">-->
-<!--    <a href="{{ topic.get_absolute_url }}"> <img src="{% static 'blog/thumbsup.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs" ></a>-->
 
-<!--<span>{{comment.likes}}</span>-->
-
-<!--<a href="{{ topic.get_absolute_url }}"><img src="{% static 'blog/thumbsdown.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs"></a>-->
-
-<!--<span>{{comment.dislikes}}</span>-->
-<!--</form>-->
