@@ -1,4 +1,5 @@
 from django import forms
+from .models import Comment
 
 
 class ExampleSignupForm(forms.Form):
@@ -19,3 +20,19 @@ class ExampleSignupForm(forms.Form):
         required=False,
         label='Do you wish to receive our newsletter?'
     )
+
+
+class CommentForm(forms.Form):
+    name = forms.CharField(label='name', max_length=50)
+    email = forms.EmailField()
+    text = forms.CharField(widget=forms.Textarea)
+
+
+# class CommentForm(forms.ModelForm):
+    # class Meta:
+    #     model = Comment
+    #     fields = ('name', 'email', 'text')
+
+    # name = forms.CharField(label='name', max_length=50)
+    # email = forms.EmailField()
+    # text = forms.CharField(widget=forms.Textarea)

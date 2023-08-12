@@ -130,6 +130,7 @@ class Post(models.Model):
         ordering = ['-created']
 
     def publish(self):
+        """Publishes this post"""
         self.status = self.PUBLISHED
         self.published = timezone.now()
 
@@ -150,10 +151,18 @@ class Post(models.Model):
         return reverse('post-detail', kwargs=kwargs)
 
 
+class CommentQuerySet(models.QuerySet):
+    def get_comments(self):
+        return Comment.objects.all().filter(comments__in=self)
+
+
 class Comment(models.Model):
     """
     Represents visitors comments
     """
+
+    objects = models.Manager()
+
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -178,11 +187,27 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True,)
     updated = models.DateTimeField(auto_now=True)
 
+    likes = models.PositiveIntegerField(
+        default=0,
+    )
+
+    dislikes = models.PositiveIntegerField(
+        default=0
+    )
+
     class Meta:
         ordering = ['-created']
 
     def __str__(self):
         return f'"{self.text}" by {self.name} posted {self.created}\n'
+
+    def get_absolute_url(self):
+        self.number_of_likes = self.likes
+        self.number_of_dislikes = self.dislikes
+        if self.number_of_likes:
+            return reverse('like', kwargs={'pk': self.pk})
+        elif self.number_of_dislikes:
+            return reverse('dislike', kwargs={'pk': self.pk})
 
 
 class Contact(models.Model):

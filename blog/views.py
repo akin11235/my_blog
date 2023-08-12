@@ -16,14 +16,16 @@ from django.contrib import messages
 #     """
 #     def get_context_data(self, **kwargs):
 #         context = super().get_context_data(**kwargs)
-#         context['authors'] = models.Post.objects.published() \
-#             .get_authors() \
-#             .order_by('first_name')
-#
-#         context['number_of_posts'] = models.Topic.objects.all()\
-#             .annotate(topics=Count('blog_posts')).values('name', 'topics').order_by('-topics')[:10]
-#
-#         return context
+        # context['authors'] = models.Post.objects.published() \
+        #     .get_authors() \
+        #     .order_by('first_name')
+        #
+        # context['number_of_posts'] = models.Topic.objects.all()\
+        #     .annotate(topics=Count('blog_posts')).values('name', 'topics').order_by('-topics')[:10]
+
+        # context['comment_form'] = forms.CommentForm
+        #
+        # return context
 
 
 # /////////////// HOME VIEW ////////////
@@ -85,19 +87,6 @@ class HomeView(TemplateView):
 
 
 # /////////////// ABOUT VIEW ////////////
-"""  
-# 1st implementation of about view using class based view for the About page
-class AboutView(View):
-    def get(self, request):
-        return render(request, 'blog/about.html')
-
-
-2nd implementation of about view using a Template view
-class AboutView(TemplateView):
-    template_name = 'blog/about.html' 
-    """
-
-
 class AboutView(TemplateView):
     """
     The about page
@@ -132,21 +121,41 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model = models.Post
+    comments = models.Comment
+    like = comments.likes
+    dislike = comments.dislikes
 
-    def get_queryset(self):
-        # Get the base queryset
-        queryset = super().get_queryset().published()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = forms.CommentForm
 
-        # If this is a 'pk' lookup, use default queryset
-        if 'pk' in self.kwargs:
-            return queryset
+        context.update({'form': form})
 
-        # Otherwise, filter on the published date
-        return queryset.filter(
-            published__year=self.kwargs['year'],
-            published__month=self.kwargs['month'],
-            published__day=self.kwargs['day'],
-        )
+        return context
+
+    # post = models.Post.objects.get(slug = slug)
+    #
+    # def get_likes_or_dislikes(self, request, pk):
+    #     if request.method == 'POST':
+    #         form = CommentFormView(request.POST)
+    #
+    #
+    # def get_queryset(self):
+    #     # Get the base queryset
+    #     queryset = super().get_queryset().published()
+    #
+    #     # If this is a 'pk' lookup, use default queryset
+    #     if 'pk' in self.kwargs:
+    #         return queryset
+    #
+    #     # Otherwise, filter on the published date
+    #     return queryset.filter(
+    #         published__year=self.kwargs['year'],
+    #         published__month=self.kwargs['month'],
+    #         published__day=self.kwargs['day'],
+    #     )
+
+
 
 
 # /////////////// TOPICS ////////////
@@ -271,3 +280,52 @@ class PhotoContestSubmissionFormView(CreateView):
             'Thank you! Your photo submission has been received.'
         )
         return super().form_valid(form)
+
+
+class CommentFormView(CreateView):
+    model = models.Comment
+
+    def get_object(self, queryset=None):
+        return models.Comment.objects.get(pk=self.kwargs['like'])
+
+    def get_queryset(self):
+        # Get the base queryset
+        queryset = super().get_queryset()
+
+        # If this is a 'pk' lookup, use default queryset
+        if 'pk' in self.kwargs:
+
+            return queryset
+
+    success_url = reverse_lazy('home')
+    template_name = 'blog/comment.html'
+    fields = [
+        'name',
+        'email',
+        'text',
+    ]
+
+    def form_valid(self, form):
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Thank you! Your comment has been posted.'
+        )
+        return super().form_valid(form)
+
+
+# class CommentFormView(FormView):
+#     template_name = 'blog/comment.html'
+#     form_class = forms.CommentForm
+#     success_url = reverse_lazy('home')
+#
+#     def form_valid(self, form):
+#         # Create a "success" message
+#         messages.add_message(
+#             self.request,
+#             messages.SUCCESS,
+#             'Thank you for your comment up!'
+#         )
+#         # Continue with default behaviour
+#         return super().form_valid(form)
+

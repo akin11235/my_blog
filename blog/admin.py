@@ -73,6 +73,11 @@ class CommentAdmin(admin.ModelAdmin):
         'post__topics',
     )
 
+    # actions = ['approve_comments']
+
+    # def approve_comments(self, request, queryset):
+    #     queryset.update(active=True)
+
 
 @admin.register(models.Contact)
 class ContactAdmin(admin.ModelAdmin):
