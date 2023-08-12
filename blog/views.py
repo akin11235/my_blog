@@ -8,7 +8,6 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 
 
-
 # Create your views here.
 # ContextMixin deleted from views.py amd moved to context_processors.py
 # class ContextMixin:
@@ -17,16 +16,16 @@ from django.contrib import messages
 #     """
 #     def get_context_data(self, **kwargs):
 #         context = super().get_context_data(**kwargs)
-        # context['authors'] = models.Post.objects.published() \
-        #     .get_authors() \
-        #     .order_by('first_name')
-        #
-        # context['number_of_posts'] = models.Topic.objects.all()\
-        #     .annotate(topics=Count('blog_posts')).values('name', 'topics').order_by('-topics')[:10]
-
-        # context['comment_form'] = forms.CommentForm
-        #
-        # return context
+#         context['authors'] = models.Post.objects.published() \
+#             .get_authors() \
+#             .order_by('first_name')
+#
+#         context['number_of_posts'] = models.Topic.objects.all()\
+#             .annotate(topics=Count('blog_posts')).values('name', 'topics').order_by('-topics')[:10]
+#
+#         context['comment_form'] = forms.CommentForm
+#
+#         return context
 
 
 # /////////////// HOME VIEW ////////////
@@ -130,26 +129,12 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         form = forms.CommentForm
 
-        context.update({'form': form})
+        total_likes = models.Comment.likes
+
+        context.update({'form': form, 'total': total_likes})
 
         return context
 
-
-
-    # def like(request, pk):
-    #     post = models.Post.objects.get(pk)
-    #     comment = post.comments
-    #     current_like = models.Comment.likes
-    #
-    #     liked = models.Comment.likes.filter(post=post).count()
-
-
-    # post = models.Post.objects.get(slug = slug)
-    #
-    # def get_likes_or_dislikes(self, request, pk):
-    #     if request.method == 'POST':
-    #         form = CommentFormView(request.POST)
-    #
     #
     # def get_queryset(self):
     #     # Get the base queryset
@@ -290,86 +275,55 @@ class PhotoContestSubmissionFormView(CreateView):
         return super().form_valid(form)
 
 
-def get_comments(request, post):
-    post = get_object_or_404(models.Post, pk=post)
-
-    comments = post.comments
-
-    new_comment = None
-
-    if request.method == 'POST':
-        # Pass the POST data into a new form instance for validation
-        comment_form = forms.CommentForm(request.POST)
-        # If the form is valid, return a different template.
-        if comment_form.is_valid():
-            # form.cleaned_data is a dict with valid form data
-            cleaned_data = comment_form.cleaned_data
-            new_comment = cleaned_data.save()
-
-            return render(
-                request,
-                'blog/post_detail.html',
-                context={'data': cleaned_data}
-            )
-        # If not a POST, return a blank form
-        else:
-            comment_form = forms.CommentForm()
-
-        # Render if either an invalid POST or a GET
-        return render(request, 'blog/post_detail.html', context={'form': comment_form})
-
-# class CommentFormView(CreateView):
-#     model = models.Comment
-#
-#     def get_object(self, queryset=None):
-#         return models.Comment.objects.get(pk=self.kwargs['like'])
-#
-#     def get_queryset(self):
-#         # Get the base queryset
-#         queryset = super().get_queryset()
-#
-#         # If this is a 'pk' lookup, use default queryset
-#         if 'pk' in self.kwargs:
-#
-#             return queryset
-#
-#     success_url = reverse_lazy('home')
-#     template_name = 'blog/comment.html'
-#     fields = [
-#         'name',
-#         'email',
-#         'text',
-#     ]
-#
-#     def form_valid(self, form):
-#         messages.add_message(
-#             self.request,
-#             messages.SUCCESS,
-#             'Thank you! Your comment has been posted.'
-#         )
-#         return super().form_valid(form)
-
-# class CommentFormView(FormView):
-#     template_name = 'blog/comment.html'
-#     form_class = forms.CommentForm
-#     success_url = reverse_lazy('home')
-#
-#     def form_valid(self, form):
-#         # Create a "success" message
-#         messages.add_message(
-#             self.request,
-#             messages.SUCCESS,
-#             'Thank you for your comment up!'
-#         )
-#         # Continue with default behaviour
-#         return super().form_valid(form)
 def like(request):
-    number_of_likes = models.Comment.likes.count()
-    context = {'likes': number_of_likes}
-    return render(request, context)
+    if request.method == 'POST':
+        # variable for updated amount of likes for the comment
+        # number_of_likes = ''
+        post_id = int(request.POST.get('pk'))
+        post = get_object_or_404(models.Post, pk=post_id)
+        comment = get_object_or_404(models.Comment, post.comments)
+        number_of_likes = 0
+        context = {'likes': number_of_likes}
+        return render(request, 'blog/post_detail', context)
+
+
+# def like(request, pk):
+#     post = models.Post.objects.get(pk)
+#     comment = post.comments
+#     current_like = models.Comment.likes
+#
+#     liked = models.Comment.likes.filter(post=post).count()
 
 
 def dislike(request):
     number_of_dislikes = models.Comment.likes.count()
     context = {'dislike': number_of_dislikes}
     return render(request, context)
+
+# def get_comments(request, post):
+#     post = get_object_or_404(models.Post, pk=post)
+#
+#     comments = post.comments
+#
+#     new_comment = None
+#
+#     if request.method == 'POST':
+#         # Pass the POST data into a new form instance for validation
+#         comment_form = forms.CommentForm(request.POST)
+#         # If the form is valid, return a different template.
+#         if comment_form.is_valid():
+#             # form.cleaned_data is a dict with valid form data
+#             cleaned_data = comment_form.cleaned_data
+#             new_comment = cleaned_data.save()
+#
+#             return render(
+#                 request,
+#                 'blog/post_detail.html',
+#                 context={'data': cleaned_data}
+#             )
+#         # If not a POST, return a blank form
+#         else:
+#             comment_form = forms.CommentForm()
+#
+#         # Render if either an invalid POST or a GET
+#         return render(request, 'blog/post_detail.html', context={'form': comment_form})
