@@ -51,18 +51,9 @@ class PostQuerySet(models.QuerySet):
         return self.filter(status=self.model.DRAFT)
 
     def get_authors(self):
-        User = get_user_model()
+        user = get_user_model()
         # Get the users who are authors of this queryset
-        return User.objects.filter(blog_posts__in=self).distinct()
-
-
-# class PostManager(models.Manager):
-#     """
-#     Represents modified Post model base queryset
-#     """
-#     def get_queryset(self):
-#         queryset = super().get_queryset()  # Get the initial queryset
-#         return queryset.exclude(deleted=True)
+        return user.objects.filter(blog_posts__in=self).distinct()
 
 
 class Post(models.Model):
@@ -213,7 +204,7 @@ class Contact(models.Model):
         ordering = ['-submitted']
 
     def __str__(self):
-        return f'{self.submitted.date()}: {self.email}'
+        return f'{self.submitted.auto_created()}: {self.email}'
 
 
 class PhotoContestSubmission(models.Model):
@@ -231,4 +222,4 @@ class PhotoContestSubmission(models.Model):
         ordering = ['-submitted']
 
     def __str__(self):
-        return f'{self.submitted.date()}: {self.email}'
+        return f'{self.submitted.auto_created()}: {self.email}'

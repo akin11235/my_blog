@@ -31,3 +31,27 @@ class CommentForm(forms.ModelForm):
             'email': forms.TextInput(attrs={'class': "col-sm-12"}),
             'text': forms.Textarea(attrs={'class': "col-sm-12"}),
         }
+
+
+# def comment_form(request):
+#     # Handle the POST
+#     if request.method == 'POST':
+#         # Pass the POST data into a new form instance for validation
+#         form = forms.CommentForm(request.POST)
+#
+#         # If the form is valid, return a different template.
+#         if form.is_valid():
+#             # form.cleaned_data is a dict with valid form data
+#             cleaned_data = form.cleaned_data
+#
+#             return render(
+#                 request,
+#                 'blog/form_example_success.html',
+#                 context={'data': cleaned_data}
+#             )
+#     # If not a POST, return a blank form
+#     else:
+#         form = forms.CommentForm()
+#
+#     # Return if either an invalid POST or a GET
+#     return render(request, 'blog/form_example.html', context={'comment_form': comment_form})

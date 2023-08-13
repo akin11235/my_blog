@@ -1,11 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from . import forms, models
-from django.db.models import Count
+from django.db.models import Count, F
 # from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, CreateView, FormView, ListView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 
 
 # Create your views here.
@@ -68,21 +70,6 @@ class HomeView(TemplateView):
 
         context.update({'latest_posts': latest_posts})
 
-        # authors = models.Post.objects.published() \
-        #     .get_authors() \
-        #     .order_by('first_name')
-        #
-        # number_of_posts = models.Topic.objects.all() \
-        #     .annotate(topics=Count('blog_posts')) \
-        #     .values('name', 'topics') \
-        #     .order_by('-topics')[:10]
-
-        # Update the context with our context variables
-        # context.update({
-        #     'authors': authors,
-        #     'latest_posts': latest_posts
-        #     'number_of_posts': number_of_posts
-        # })
         return context
 
 
@@ -92,20 +79,6 @@ class AboutView(TemplateView):
     The about page
     """
     template_name = 'blog/about.html'
-
-    # Code below manipulates the context data by overriding get_context_data() method
-    # The code below has been moved to the ContextMixin class, so essentially back to 2nd implementation
-
-    # def get_context_data(self, **kwargs):
-    #     # Get the context data from the parent class
-    #     context = super().get_context_data(**kwargs)
-    #
-    #     # Define the "authors" context variable
-    #     context['authors'] = models.Post.objects.published() \
-    #         .get_authors() \
-    #         .order_by('first_name')
-    #
-    #     return context
 
 
 # ///////////////TERMS AND CONDITIONS ////////////
@@ -122,42 +95,36 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = models.Post
     comments = models.Comment
-    # like = comments.likes
-    # dislike = comments.dislikes
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = forms.CommentForm
 
-        total_likes = models.Comment.likes
-
-        context.update({'form': form, 'total': total_likes})
+        context.update({'form': form})
 
         return context
 
-    #
-    # def get_queryset(self):
-    #     # Get the base queryset
-    #     queryset = super().get_queryset().published()
-    #
-    #     # If this is a 'pk' lookup, use default queryset
-    #     if 'pk' in self.kwargs:
-    #         return queryset
-    #
-    #     # Otherwise, filter on the published date
-    #     return queryset.filter(
-    #         published__year=self.kwargs['year'],
-    #         published__month=self.kwargs['month'],
-    #         published__day=self.kwargs['day'],
-    #     )
+    def get(self, request, *args, **kwargs):
+
+        if request.method == 'POST':
+            # result = ''
+            post_id = int(request.POST.get('pk'))
+            comment = models.Post.objects.get(id=post_id)
+            comment.likes = F(comment.likes) + 1
+            result = comment.likes
+            comment.save()
+            # return HttpResponseRedirect(reverse)
+            # context.update({'result':result})
+
+        # if request.POST.get('dislike'):
+        #     comment = models.Comment.objects.get(post='pk')
+        #     comment.dislikes = F(comment.dislikes) + 1
+        #     comment.save()
+        # context = ({'likes': likes, 'dislikes': dislikes})
+        # return render(request, 'blog/form_example.html', context)
+
 
 # /////////////// TOPICS ////////////
-# class TopicView(TemplateView):
-#     template_name = 'blog/topics.html'
-    #
-    # def get(self, request):
-    #     return render(request, 'blog/topic.html')
-
 
 class TopicListView(ListView):
     model = models.Topic
@@ -275,30 +242,23 @@ class PhotoContestSubmissionFormView(CreateView):
         return super().form_valid(form)
 
 
-def like(request):
-    if request.method == 'POST':
-        # variable for updated amount of likes for the comment
-        # number_of_likes = ''
-        post_id = int(request.POST.get('pk'))
-        post = get_object_or_404(models.Post, pk=post_id)
-        comment = get_object_or_404(models.Comment, post.comments)
-        number_of_likes = 0
-        context = {'likes': number_of_likes}
-        return render(request, 'blog/post_detail', context)
+def comments_likes_and_dislikes(request, pk):
+    comment = models.Comment.objects.get(pk=pk)
+    likes = comment.likes
+    dislikes = comment.dislikes
 
+    #     # comment = request.POST.get('pk')
+    #     # post = models.Post.objects.get(pk)
+    #     # comment = post.comments
 
-# def like(request, pk):
-#     post = models.Post.objects.get(pk)
-#     comment = post.comments
-#     current_like = models.Comment.likes
-#
-#     liked = models.Comment.likes.filter(post=post).count()
+    if request.POST.get('like'):
+        likes += 0
+    if request.POST.get('dislike'):
+        dislikes += 0
+    comment.save()
+    context = ({'likes': likes, 'dislikes': dislikes})
+    return render(request, 'blog/form_example.html', context)
 
-
-def dislike(request):
-    number_of_dislikes = models.Comment.likes.count()
-    context = {'dislike': number_of_dislikes}
-    return render(request, context)
 
 # def get_comments(request, post):
 #     post = get_object_or_404(models.Post, pk=post)

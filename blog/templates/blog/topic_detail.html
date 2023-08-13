@@ -5,14 +5,14 @@
 {% block main %}
 
 
-  <h2>{{requested_category}}</h2>
+<h2>{{requested_category}}</h2>
 
-  <p>{{ topic_posts|length}} post{{ topic_posts|pluralize}}</p>
+<p>{{ topic_posts|length}} post{{ topic_posts|pluralize}}</p>
 
-    {% for post in topic_posts %}
-      {% include "blog/post_preview.html" %}
+  {% for post in topic_posts %}
+    {% include "blog/post_preview.html" %}
 
-    {% endfor %}
+  {% endfor %}
 
 {% endblock %}
 
