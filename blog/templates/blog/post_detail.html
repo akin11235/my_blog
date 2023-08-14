@@ -26,14 +26,14 @@
     <h1 >Latest Comments</h1>
 
      {% for comment in post.comments.all %}
-        <section class="published">By {{ comment.author.get_full_name}} | {{comment.updated}}</section>
+        <section class="published">By {{ comment.name}} | {{comment.updated}}</section>
         <p>{{ comment.text }}</p>
-            <a href="{% url 'like' post.pk %}" class="like">
+            <a href="{% url 'like' comment.pk %}" class="like">
            <img src="{% static 'blog/thumbsup.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs" >
             </a>  <span>{{comment.likes}}</span>
-            <a href="{% url 'dislike' post.pk %}" class="dislike">
+            <a href="{% url 'dislike' comment.pk %}" class="dislike">
                 <img src="{% static 'blog/thumbsdown.png' %}" alt="logo" style="width:15px;height:15px;" class="thumbs">
-            </a> <span>{{comment.likes}}</span>
+            </a> <span>{{comment.dislikes}}</span>
         <pre></pre>
     {% endfor %}
 </article >

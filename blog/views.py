@@ -1,12 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from . import forms, models
 from django.db.models import Count, F
 # from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic import DetailView, CreateView, FormView, ListView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 
 
 
@@ -104,17 +105,21 @@ class PostDetailView(DetailView):
 
         return context
 
-    def get(self, request, *args, **kwargs):
 
-        if request.method == 'POST':
-            # result = ''
-            post_id = int(request.POST.get('pk'))
-            comment = models.Post.objects.get(id=post_id)
-            comment.likes = F(comment.likes) + 1
-            result = comment.likes
-            comment.save()
-            # return HttpResponseRedirect(reverse)
-            # context.update({'result':result})
+    # def get(self, request, *args, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     slug = self.kwargs['slug']
+
+        # if request.method == 'POST':
+        #     post = models.Post.objects.get(slug=slug)
+        #     post_id = int(request.POST.get('pk'))
+        #     comment = models.Post.objects.filter(post=post)
+        #     comment.likes = F(comment.likes) + 1
+        #     result = comment.likes
+        #     comment.save()
+        #
+        #     context.update({'result': result})
+        #     return render(request, 'blog/form_example.html', context)
 
         # if request.POST.get('dislike'):
         #     comment = models.Comment.objects.get(post='pk')
@@ -242,22 +247,22 @@ class PhotoContestSubmissionFormView(CreateView):
         return super().form_valid(form)
 
 
-def comments_likes_and_dislikes(request, pk):
-    comment = models.Comment.objects.get(pk=pk)
-    likes = comment.likes
-    dislikes = comment.dislikes
-
-    #     # comment = request.POST.get('pk')
-    #     # post = models.Post.objects.get(pk)
-    #     # comment = post.comments
-
-    if request.POST.get('like'):
-        likes += 0
-    if request.POST.get('dislike'):
-        dislikes += 0
-    comment.save()
-    context = ({'likes': likes, 'dislikes': dislikes})
-    return render(request, 'blog/form_example.html', context)
+# def comments_likes_and_dislikes(request, pk):
+#     comment = models.Comment.objects.get(pk=pk)
+#     likes = comment.likes
+#     dislikes = comment.dislikes
+#
+#     #     # comment = request.POST.get('pk')
+#     #     # post = models.Post.objects.get(pk)
+#     #     # comment = post.comments
+#
+#     if request.POST.get('like'):
+#         likes += 0
+#     if request.POST.get('dislike'):
+#         dislikes += 0
+#     comment.save()
+#     context = ({'likes': likes, 'dislikes': dislikes})
+#     return render(request, 'blog/form_example.html', context)
 
 
 # def get_comments(request, post):
@@ -287,3 +292,63 @@ def comments_likes_and_dislikes(request, pk):
 #
 #         # Render if either an invalid POST or a GET
 #         return render(request, 'blog/post_detail.html', context={'form': comment_form})
+
+def like(request, pk):
+    comment = get_object_or_404(models.Comment, pk=pk)
+    comment.likes += 1
+    comment.save()
+    if comment:
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            'Thank you for your comment!'
+        )
+        # return HttpResponse({'likes': comment.likes})
+        return redirect('home')
+        # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+    # return render(request, 'blog/post_detail.html', {'likes': comment.likes})
+    # # return HttpResponse({'likes': comment.likes})
+    # return HttpResponse(f'Comment {comment_id} liked!')
+    else:
+        return render(request, 'blog/home.html')
+
+
+def dislike(request, pk):
+    comment = get_object_or_404(models.Comment, pk=pk)
+    comment.dislikes += 1
+    comment.save()
+    if comment:
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            'Thank you for your comment!'
+        )
+        return redirect('home')
+    # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+    else:
+        return render(request, 'blog/home.html')
+    # return JsonResponse({'dislikes': comment.dislikes})
+
+    # Second approach
+    # def dislike(request, pk):
+    #     comment = get_object_or_404(models.Comment, pk=pk)
+    #     comment.dislikes += 1
+    #     comment.save()
+    #     # return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+    #
+    #     return JsonResponse({'dislikes': comment.dislikes})
+
+    # Ist try at implementing
+    # if request.method == 'POST':
+    #
+    # post_id = int(request.POST.get('post_id'))
+
+    # comment_id = int(request.POST.get('comment_id'))
+
+    # comment = get_object_or_404(models.Comment, pk=comment_id, post__pk=post_id)
+    #
+    # comment.dislikes += 1
+    #
+    # comment.save()
+    #
+    # return HttpResponse({'dislikes': comment.dislikes})
