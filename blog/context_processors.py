@@ -15,8 +15,12 @@ def base_context(request):
         .values('name', 'topics', 'slug') \
         .order_by('-topics')[:10]
 
+    latest_posts = models.Post.objects.published() \
+                       .order_by('-published')[:3]
+
     return {'authors': authors,
             'top_topics': top_topics,
+            'latest_posts': latest_posts,
             # 'top_comments': top_comments,
             # 'comment_form': comment_form,
             }

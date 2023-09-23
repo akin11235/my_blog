@@ -1,5 +1,5 @@
 
-{% load static %} <link rel="stylesheet" href="{% static 'blog/base.css' %}">
+{% load static %} <link rel="stylesheet" href="{% static 'blog/main.css' %}">
 
   {% block js %}
     <script src='{% static "blog/csrf.js" %}'></script>
@@ -14,7 +14,8 @@
     <title>My Blog - {% block page_title %}An awesome blog{% endblock %}</title>
 </head>
 
-<body>
+<body class="right-sidebar is-preload">
+
  {% if messages %}
   <div class="django-messages">
     {% for message in messages %}
@@ -24,39 +25,78 @@
   {% endif %}
 
 <!--The header-->
-<div class="wrapper">
-<header id="site-header">
-    <h1>My Blog</h1>
-    <p>A blog about awesomeness</p>
-    <img src="{% static 'blog/logo3.jpg' %}" alt="logo">
+<!--<div class="wrapper">-->
+<!--<header id="site-header">-->
+<!--    <h1>My Blog</h1>-->
+<!--    <p>A blog about awesomeness</p>-->
+<!--    <img src="{% static 'blog/logo3.jpg' %}" alt="logo">-->
 
-</header>
+<!--</header>-->
+
+ <div id="page-wrapper">
+<!-- Header -->
+				<section id="header">
+					<div class="container">
+
+						<!-- Logo -->
+							<h1 id="logo"><a href="index.html">MY BLOG</a></h1>
+							<p>A blog about awesomeness.</p>
+
+						<!-- Nav -->
+							<nav id="nav">
+								<ul>
+
+                                    <li><a href="{% url 'home'  %}">Home</a></li>
+                                    <li><a href="{% url 'about'  %}">About</a></li>
+                                    <li><a href="{% url 'post-list' %}">Posts</a></li>
+                                    <li><a href="{% url 'topic-list' %}">Topics</a></li>
+                                    <li><a href="{% url 'contest' %}">Photo contest</a></li>
+                                    <li><a href="{% url 'contact' %}">Contact</a></li>
+
+								</ul>
+							</nav>
+
+					</div>
+				</section>
 
 
 <!--Top Navigation-->
-<nav id="top-nav">
-    <ul>
-        <li><a href="{% url 'home'  %}">Home</a></li>
-        <li><a href="{% url 'about'  %}">About</a></li>
-        <li><a href="{% url 'post-list' %}">Posts</a></li>
-        <li><a href="{% url 'topic-list' %}">Topics</a></li>
-        <li><a href="{% url 'contest' %}">Photo contest</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-    </ul>
-</nav>
+<!--<nav id="top-nav">-->
+<!--    <ul>-->
+<!--        <li><a href="{% url 'home'  %}">Home</a></li>-->
+<!--        <li><a href="{% url 'about'  %}">About</a></li>-->
+<!--        <li><a href="{% url 'post-list' %}">Posts</a></li>-->
+<!--        <li><a href="{% url 'topic-list' %}">Topics</a></li>-->
+<!--        <li><a href="{% url 'contest' %}">Photo contest</a></li>-->
+<!--        <li><a href="{% url 'contact' %}">Contact</a></li>-->
+<!--    </ul>-->
+<!--</nav>-->
 
-<main id="main-content">
-    <div>
+ <!-- Main -->
+     <section id="main">
+         <div class="container">
+             <div class="row">
+
+<!--<main id="main-content">-->
+    <div id="content" class="col-8 col-12-medium">
         {% block main %}
 
         {% endblock %}
     </div>
 
-    <aside id="sidebar">
-        <section id="author-list">
+    <div id="sidebar" class="col-4 col-12-medium">
+        <section>
+
+             <h1>Latest posts</h1>
+  {% for post in latest_posts %}
+    {% include "blog/post_preview.html" %}
+  {% endfor %}
 
             <h3>Popular Topics</h3>
-               <ul>
+
+
+
+               <ul >
                     {% for topic in top_topics %}
                         <li><a href="{% url 'topic-detail' topic.slug %}">{{ topic.name }} ({{ topic.topics }})</a></li>
                     {% endfor %}
@@ -67,19 +107,136 @@
                     {% for author in authors %}
                          <li>{{ author.get_full_name }}</li>
                     {% endfor %}
+
+
+
                 </ul>
 
         </section>
-    </aside>
 
-</main>
 
+    </div>
+             </div>
+             </div>
+
+<!--</main>-->
+     </section>
 
 <!--The Footer-->
-<footer id="site-footer">
-    Copyright &copy;{% now 'Y' %}
-    <a href="{% url 'terms-and-conditions' %}">Terms & conditions</a>
-</footer>
-</div>
+<!--<footer id="site-footer">-->
+<!--    Copyright &copy;{% now 'Y' %}-->
+<!--    <a href="{% url 'terms-and-conditions' %}">Terms & conditions</a>-->
+<!--</footer>-->
+
+    <!-- Footer -->
+				<section id="footer">
+					<div class="container">
+						<header>
+							<h2>Questions or comments? <strong>Get in touch:</strong></h2>
+						</header>
+<!--						<div class="row">-->
+<!--							<div class="col-6 col-12-medium">-->
+<!--								<section>-->
+<!--									<form method="post" action="#">-->
+<!--										<div class="row gtr-50">-->
+<!--											<div class="col-6 col-12-small">-->
+<!--												<input name="name" placeholder="Name" type="text" />-->
+<!--											</div>-->
+<!--											<div class="col-6 col-12-small">-->
+<!--												<input name="email" placeholder="Email" type="text" />-->
+<!--											</div>-->
+<!--											<div class="col-12">-->
+<!--												<textarea name="message" placeholder="Message"></textarea>-->
+<!--											</div>-->
+<!--											<div class="col-12">-->
+<!--												<a href="#" class="form-button-submit button icon solid fa-envelope">Send Message</a>-->
+<!--											</div>-->
+<!--										</div>-->
+<!--									</form>-->
+<!--								</section>-->
+<!--							</div>-->
+<!--							<div class="col-6 col-12-medium">-->
+<!--								<section>-->
+<!--									<p>Erat lorem ipsum veroeros consequat magna tempus lorem ipsum consequat Phaselamet-->
+<!--									mollis tortor congue. Sed quis mauris sit amet magna accumsan tristique. Curabitur-->
+<!--									leo nibh, rutrum eu malesuada.</p>-->
+<!--									<div class="row">-->
+<!--										<div class="col-6 col-12-small">-->
+<!--											<ul class="icons">-->
+<!--												<li class="icon solid fa-home">-->
+<!--													1234 Somewhere Road<br />-->
+<!--													Nashville, TN 00000<br />-->
+<!--													USA-->
+<!--												</li>-->
+<!--												<li class="icon solid fa-phone">-->
+<!--													(000) 000-0000-->
+<!--												</li>-->
+<!--												<li class="icon solid fa-envelope">-->
+<!--													<a href="#">info@untitled.tld</a>-->
+<!--												</li>-->
+<!--											</ul>-->
+<!--										</div>-->
+<!--										<div class="col-6 col-12-small">-->
+<!--											<ul class="icons">-->
+<!--												<li class="icon brands fa-twitter">-->
+<!--													<a href="#">@untitled</a>-->
+<!--												</li>-->
+<!--												<li class="icon brands fa-instagram">-->
+<!--													<a href="#">instagram.com/untitled</a>-->
+<!--												</li>-->
+<!--												<li class="icon brands fa-dribbble">-->
+<!--													<a href="#">dribbble.com/untitled</a>-->
+<!--												</li>-->
+<!--												<li class="icon brands fa-facebook-f">-->
+<!--													<a href="#">facebook.com/untitled</a>-->
+<!--												</li>-->
+<!--											</ul>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--								</section>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+
+
+
+					<div id="copyright" class="container">
+
+						<ul class="links">
+                            <li>
+                                <a
+                                  target="_blank"
+                                  href="https://github.com/akin11235"
+                                  class="icon brands fa-github"
+                                  ><span>Github</span></a
+                                >
+                            </li>
+
+                              <li>
+                                <a
+                                  target="_blank"
+                                  href="https://www.linkedin.com/in/dele-oladunmoye-418b0015/"
+                                  class="icon brands fa-linkedin-in"
+                                  ><span>LinkedIn</span></a
+                                >
+                              </li>
+                                <li>&copy; All rights reserved.</li>
+                                <li><a href="{% url 'terms-and-conditions' %}">Terms & conditions</a></li>
+						</ul>
+					</div>
+                    </div>
+				</section>
+<!--</div>-->
+ </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
