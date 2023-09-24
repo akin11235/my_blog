@@ -85,14 +85,17 @@
         {% endblock %}
     </div>
 
+<!-- Side Bar       -->
+
     <div id="sidebar" class="col-4 col-12-medium">
         <section>
 
              <h1>Latest posts</h1>
+            <ul class="divided">
   {% for post in latest_posts %}
-    {% include "blog/post_preview.html" %}
+                <li>{% include "blog/post_preview.html" %}</li>
   {% endfor %}
-
+</ul>
             <h3>Popular Topics</h3>
 
 

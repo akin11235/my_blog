@@ -1,9 +1,10 @@
-<article class="post-preview">
+<article class="box excerpt">
 <h2>{{ post.title }}</h2>
-<time>{{ post.published }}</time>
-<section class="teaser">
+<p class="date"><time>{{ post.published }}</time></p>
+<section>
   {{ post.content|striptags|truncatewords:20 }}
 </section>
 <p><a href="{{ post.get_absolute_url }}">Read more &rarr; </a></p>
+
 </article>
 
